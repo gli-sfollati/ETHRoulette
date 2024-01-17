@@ -49,7 +49,7 @@ App = {
       var rouletteInstance;
   
       App.contracts.Roulette.deployed().then(function(instance) {
-        roulettenstance = instance;
+        rouletteInstance = instance;
   
         return rouletteInstance.getStatus.call();
       }).then(function(int1,int2) {
