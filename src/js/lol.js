@@ -36,30 +36,51 @@ App = {
   
         // Set the provider for our contract
         App.contracts.Roulette.setProvider(App.web3Provider);
-  
-        // Use our contract to retrieve and mark the adopted pets
-        return App.GetStatus();
       });
-  
       return App.GetStatus();
     },
   
     
-    GetStatus: function(adopters, account) {
-      var rouletteInstance;
+    // GetStatus: function() {
+    //   console.log("arrivo fin qui");
+    //   var RouletteInstance;
+    //   App.contracts.Roulette.deployed().then(function(instance) {
+    //     roulettenstance = instance;
   
-      App.contracts.Roulette.deployed().then(function(instance) {
-        roulettenstance = instance;
-  
-        return rouletteInstance.getStatus.call();
-      }).then(function(int1,int2) {
-        console.log(int1,int2);
-        var text1 =$('#roulettetext');
-      }).catch(function(err) {
-        console.log(err.message);
+    //     return rouletteInstance.getStatus.call();
+    //   }).then(function(int1,int2) {
+    //     console.log(int1,int2);
+    //     var text1 =$('#roulettetext');
+    //   }).catch(function(err) {
+    //     console.log(err.message);
+    //   });
+    // },
+    GetStatus: async function () {
+
+      //aggiunto un reindirizzamento al contratto perché nella funzione non mi riesce a trovare il contratto
+      var RouletteInstance;
+
+      $.getJSON('Roulette.json', function (data) {
+          var RouletteArtifact = data;
+          App.contracts.Roulette = TruffleContract(RouletteArtifact);
+
+          App.contracts.Roulette.setProvider(App.web3Provider);
+
+          App.contracts.Roulette.deployed().then(async function (instance) {
+            console.log("sono dentro 1");
+            RouletteInstance = instance;
+            console.log("sono dentro 2");
+              const data = RouletteInstance.getStatus.call();
+              
+              console.log("sono dentro 3");
+              console.log("lo stato è: "+ data);
+              return data;
+          }).then(function (result) {
+              console.log(result);
+             
+          });
       });
-    },
-  
+  },
     
   
   };

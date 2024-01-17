@@ -24,12 +24,10 @@ contract Roulette {
         betAmount = 1 ether;
     }
 
-    function getStatus() public view returns (uint, uint, uint) {
-        return (
-            bets.length, // number of active bets
-            address(this).balance, // roulette balance
-            winnings[msg.sender] // giocatori vincenti
-        );
+    function getStatus() public view returns (uint) {
+        return
+            address(this).balance// roulette balance
+        ;
     }
 
    // function addEther() public payable {}
