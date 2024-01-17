@@ -33,6 +33,7 @@ contract Roulette {
     }
 
    // function addEther() public payable {}
+   //cazz
 
     function bet(uint8 number, uint8 betType) public payable {
         require(msg.value >= betAmount);
