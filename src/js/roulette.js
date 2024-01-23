@@ -21,7 +21,7 @@ App = {
           await window.ethereum.enable();
         } catch (error) {
           // User denied account access...
-          console.error("User denied account access")
+          console.error("User denied account access");
         }
       }
       // Legacy dapp browsers...
@@ -39,22 +39,61 @@ App = {
   
 	
     initContract: function() {
-		/*
-      $.getJSON('Roulette.json', function(data) {
-        // Get the necessary contract artifact file and instantiate it with truffle-contract
-        var RouletteArtifact = data;
-        App.contracts.Roulette = TruffleContract(RouletteArtifact);
-  
-        // Set the provider for our contract
-        App.contracts.Roulette.setProvider(App.web3Provider);
-  
-        // Use our contract to retrieve and mark the adopted pets
-        return App.GetStatus();
-      });
-  
-      return App.GetStatus();
-	  */
-    },
+		
+		$.getJSON('Roulette.json', function(data) {
+		  // Get the necessary contract artifact file and instantiate it with @truffle/contract
+		  var RouletteArtifact = data;
+		  App.contracts.Roulette = TruffleContract(RouletteArtifact);
+		
+		  // Set the provider for our contract
+		  App.contracts.Roulette.setProvider(App.web3Provider);
+		
+		  // Use our contract to retrieve and mark the adopted pets
+		  //return App.spinWheel2();
+		});
+		
+	
+		return App.bindEvents();
+	  },
+
+	
+	  bindEvents: function() {
+		$(document).on('click', '.spinBtn', App.goGame);
+	  },
+
+
+	goGame: function(event) {
+		event.preventDefault();
+	
+		var rouletteInstance;
+	
+	web3.eth.getAccounts(function(error, accounts) {
+
+	  if (error) {
+		console.log(error);
+	  }
+	
+	  var account = accounts[0];
+	
+	  App.contracts.Roulette.deployed().then(function(instance) {
+		rouletteInstance = instance;
+
+		//invio transazione per giore (numer 0 - bettype 0) ovvero puntando sul colore nero
+		//rouletteInstance.bet(0,0);
+	
+		//il contratto ritorna il numero generato per semplicità ritorna sempre 12
+		var number= rouletteInstance.spinWheel();
+		console.log(number);
+		// Execute adopt as a transaction by sending account
+		return number
+	  }).then(function(result) {
+		return spin(result.c[0]);
+	  }).catch(function(err) {
+		console.log(err.message);
+	  });
+	});
+	
+	  }
 
   
   };
@@ -524,10 +563,11 @@ function setBet(e, n, t, o){
 			let spinBtn = document.createElement('div');
 			spinBtn.setAttribute('class', 'spinBtn');
 			spinBtn.innerText = 'spin';
+			/*
 			spinBtn.onclick = function(){
 				this.remove();
 				spin();
-			};
+			};*/
 			
 
 			container.append(spinBtn);
@@ -580,8 +620,8 @@ function setBet(e, n, t, o){
 	}
 }
 
-function spin(){
-	var winningSpin = Math.floor(Math.random() * 37);
+function spin(number){
+	var winningSpin = number
 	spinWheel(winningSpin);
 	setTimeout(function(){
 		if(numbersBet.includes(winningSpin)){
@@ -620,6 +660,7 @@ function spin(){
 	}, 10000);
 }
 
+//banner quando si vince
 function win(winningSpin, winValue, betTotal){
 	if(winValue > 0){
 		let notification = document.createElement('div');
@@ -701,7 +742,7 @@ function removeBet(e, n, t, o){
 }
 
 
-
+//ferma la roulette sul numero generato
 function spinWheel(winningSpin){
 
 
