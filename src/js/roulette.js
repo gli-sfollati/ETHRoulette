@@ -1,22 +1,85 @@
-let bankValue = 10;
-let currentBet = 0;
-let wager = 0.05;
-let lastWager = 0.0;
-let bet = [];
-let numbersBet = [];
-let previousNumbers = [];
+App = {
+    web3Provider: null,
+    contracts: {},
 
-let numRed = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
-let wheelnumbersAC = [0, 26, 3, 35, 12, 28, 7, 29, 18, 22, 9, 31, 14, 20, 1, 33, 16, 24, 5, 10, 23, 8, 30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32];
+	init: async function() {
+		// creazione roulette
+		$.getJSON('Roulette.json', function(data) {
+			startGame();
+	});
+	
+		return await App.initWeb3();
+	  },
 
-let container = document.createElement('div');
-container.setAttribute('id', 'container');
-document.body.append(container);
+  
+    initWeb3: async function() {
+      // Modern dapp browsers...
+      if (window.ethereum) {
+        App.web3Provider = window.ethereum;
+        try {
+          // Request account access
+          await window.ethereum.enable();
+        } catch (error) {
+          // User denied account access...
+          console.error("User denied account access")
+        }
+      }
+      // Legacy dapp browsers...
+      else if (window.web3) {
+        App.web3Provider = window.web3.currentProvider;
+      }
+      // If no injected web3 instance is detected, fall back to Ganache
+      else {
+        App.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      }
+      web3 = new Web3(App.web3Provider);
+  
+      return App.initContract();
+    },
+  
+	
+    initContract: function() {
+		/*
+      $.getJSON('Roulette.json', function(data) {
+        // Get the necessary contract artifact file and instantiate it with truffle-contract
+        var RouletteArtifact = data;
+        App.contracts.Roulette = TruffleContract(RouletteArtifact);
+  
+        // Set the provider for our contract
+        App.contracts.Roulette.setProvider(App.web3Provider);
+  
+        // Use our contract to retrieve and mark the adopted pets
+        return App.GetStatus();
+      });
+  
+      return App.GetStatus();
+	  */
+    },
 
-startGame();
+  
+  };
+  
+  $(function() {
+    $(window).load(function() {
+      App.init();
+    });
+  });
 
-let wheel = document.getElementsByClassName('wheel')[0];
-let ballTrack = document.getElementsByClassName('ballTrack')[0];
+  let bankValue = 10;
+  let currentBet = 0;
+  let wager = 0.05;
+  let lastWager = 0.0;
+  let bet = [];
+  let numbersBet = [];
+  let previousNumbers = [];
+
+  let numRed = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+  let wheelnumbersAC = [0, 26, 3, 35, 12, 28, 7, 29, 18, 22, 9, 31, 14, 20, 1, 33, 16, 24, 5, 10, 23, 8, 30, 11, 36, 13, 27, 6, 34, 17, 25, 2, 21, 4, 19, 15, 32];
+
+  let container = document.createElement('div');
+  container.setAttribute('id', 'container');
+  document.body.append(container);
+
 
 function resetGame(){
 	bankValue = 10;
@@ -599,6 +662,10 @@ function win(winningSpin, winValue, betTotal){
 	}
 }
 
+function removeButtonSpin(){
+	document.getElementsByClassName('spinBtn')[0].remove();
+}
+
 function removeBet(e, n, t, o){
 	wager = (wager == 0)? 100 : wager;
 	for(i = 0; i < bet.length; i++){
@@ -610,6 +677,7 @@ function removeBet(e, n, t, o){
 				let val= bet[i].amt;
 				val=(val*1).toFixed(2);
 				bet[i].amt=val*1;
+
 
 				bankValue = bankValue + wager;
 				currentBet = currentBet - wager;
@@ -627,16 +695,19 @@ function removeBet(e, n, t, o){
 		}
 	}
 
-	if(currentBet == 0 && container.querySelector('.spinBtn')){
-		removeButtonSpin()
+	if((currentBet >= 0 && currentBet < 0.001) && container.querySelector('.spinBtn')){
+		removeButtonSpin();
 	}
 }
 
-function removeButtonSpin(){
-	document.getElementsByClassName('spinBtn')[0].remove();
-}
+
 
 function spinWheel(winningSpin){
+
+
+	let wheel = document.getElementsByClassName('wheel')[0];
+	let ballTrack = document.getElementsByClassName('ballTrack')[0];
+
 	if(bet.length==0){
 		alert("Effettua una giocata");
 		return;
@@ -675,7 +746,7 @@ function removeChips(){
 			chips[i].remove();
 		}
 		removeChips();
-		removeButtonSpin()
+		removeButtonSpin();
 	}
 
 }
