@@ -226,142 +226,14 @@ function buildBettingBoard(){
 	let bettingBoard = document.createElement('div');
 	bettingBoard.setAttribute('id', 'betting_board');
 
-	/*  TITOLO ROULETTE
-	let title = document.createElement('div');
-
-
-	bettingBoard.append(title);*/
-
 	let wl = document.createElement('div');
 	wl.setAttribute('class', 'winning_lines');
 	
 	var wlttb = document.createElement('div');
 	wlttb.setAttribute('id', 'wlttb_top');
 	wlttb.setAttribute('class', 'wlttb');
-	for(i = 0; i < 11; i++){
-		let j = i;
-		var ttbbetblock = document.createElement('div');
-		ttbbetblock.setAttribute('class', 'ttbbetblock');
-		var numA = (1 + (3 * j));
-		var numB = (2 + (3 * j));
-		var numC = (3 + (3 * j));
-		var numD = (4 + (3 * j));
-		var numE = (5 + (3 * j));
-		var numF = (6 + (3 * j));
-		let num = numA + ', ' + numB + ', ' + numC + ', ' + numD + ', ' + numE + ', ' + numF;
-		var objType = 'double_street';
-		ttbbetblock.onclick = function(){
-			setBet(this, num, objType, 5);
-		};
-		ttbbetblock.oncontextmenu = function(e){
-			e.preventDefault();
-			removeBet(this, num, objType, 5);
-		};
-		wlttb.append(ttbbetblock);
-	}
-	wl.append(wlttb);
 	
-/* puntata tra 2 numeri
-	for(c =  1; c < 4; c++){
-		let d = c;
-		var wlttb = document.createElement('div');
-		wlttb.setAttribute('id', 'wlttb_'+c);
-		wlttb.setAttribute('class', 'wlttb');
-		for(i = 0; i < 12; i++){
-			let j = i;
-			var ttbbetblock = document.createElement('div');
-			ttbbetblock.setAttribute('class', 'ttbbetblock');
-			ttbbetblock.onclick = function(){
-				if(d == 1 || d == 2){
-					var numA = ((2 - (d - 1)) + (3 * j));
-					var numB = ((3 - (d - 1)) + (3 * j));
-					var num = numA + ', ' + numB;
-				}
-				else{
-					var numA = (1 + (3 * j));
-					var numB = (2 + (3 * j));
-					var numC = (3 + (3 * j));
-					var num = numA + ', ' + numB + ', ' + numC;
-				}
-				var objType = (d == 3)? 'street' : 'split';
-				var odd = (d == 3)? 11 : 17;
-				setBet(this, num, objType, odd);
-			};
-			ttbbetblock.oncontextmenu = function(e){
-				e.preventDefault();
-				if(d == 1 || d == 2){
-					var numA = ((2 - (d - 1)) + (3 * j));
-					var numB = ((3 - (d - 1)) + (3 * j));
-					var num = numA + ', ' + numB;
-				}
-				else{
-					var numA = (1 + (3 * j));
-					var numB = (2 + (3 * j));
-					var numC = (3 + (3 * j));
-					var num = numA + ', ' + numB + ', ' + numC;
-				}
-				var objType = (d == 3)? 'street' : 'split';
-				var odd = (d == 3)? 11 : 17;
-				removeBet(this, num, objType, odd);
-			};
-			wlttb.append(ttbbetblock);
-		}
-		wl.append(wlttb);
-	}*/
 
-	
-	for(c = 1; c < 12; c++){
-		let d = c;
-		var wlrtl = document.createElement('div');
-		wlrtl.setAttribute('id', 'wlrtl_'+c);
-		wlrtl.setAttribute('class', 'wlrtl');
-		for(i = 1; i < 4; i++){
-			let j = i;
-			var rtlbb = document.createElement('div');
-			rtlbb.setAttribute('class', 'rtlbb'+i);
-			var numA = (3 + (3 * (d - 1))) - (j - 1);
-			var numB = (6 + (3 * (d - 1))) - (j - 1);
-			let num = numA + ', ' + numB;
-			rtlbb.onclick = function(){
-				setBet(this, num, 'split', 17);
-			};
-			rtlbb.oncontextmenu = function(e){
-				e.preventDefault();
-				removeBet(this, num, 'split', 17);
-			};
-			wlrtl.append(rtlbb);
-		}
-		wl.append(wlrtl);
-	}
-	
-	/* puntata tra 4 numeri
-	for(c = 1; c < 3; c++){
-		var wlcb = document.createElement('div');
-		wlcb.setAttribute('id', 'wlcb_'+c);
-		wlcb.setAttribute('class', 'wlcb');
-		for(i = 1; i < 12; i++){
-			let count = (c == 1)? i : i + 11;
-			var cbbb = document.createElement('div');
-			cbbb.setAttribute('id', 'cbbb_'+count);
-			cbbb.setAttribute('class', 'cbbb');
-			var numA = '2';
-			var numB = '3';
-			var numC = '5';
-			var numD = '6';
-			let num = (count >= 1 && count < 12)? (parseInt(numA) + ((count - 1) * 3)) + ', ' + (parseInt(numB)+((count - 1) * 3)) + ', ' + (parseInt(numC)+((count - 1) * 3)) + ', ' + (parseInt(numD)+((count - 1) * 3)) : ((parseInt(numA) - 1) + ((count - 12) * 3)) + ', ' + ((parseInt(numB) - 1)+((count - 12) * 3)) + ', ' + ((parseInt(numC) - 1)+((count - 12) * 3)) + ', ' + ((parseInt(numD) - 1)+((count - 12) * 3));
-			var objType = 'corner_bet';
-			cbbb.onclick = function(){
-				setBet(this, num, objType, 8);
-			};
-			cbbb.oncontextmenu = function(e){
-				e.preventDefault();
-				removeBet(this, num, objType, 8);
-			};
-			wlcb.append(cbbb);
-		}
-		wl.append(wlcb);
-	}
-*/
 	bettingBoard.append(wl);
 
 	let bbtop = document.createElement('div');
@@ -374,7 +246,12 @@ function buildBettingBoard(){
 		let num = (f == 0)? '1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18' : '19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36';
 		var objType = (f == 0)? 'outside_low' : 'outside_high';
 		bbtoptwo.onclick = function(){
-			setBet(this, num, objType, 1);
+			if(f==0){
+				setBet(this, num, objType, 1, 3, 0); //bettype 3 da 1 a 18 numeri 
+			}else{
+				setBet(this, num, objType, 1, 3, 1); //bettype 3 da 18 a 36 numeri 
+			}
+			
 		};
 		bbtoptwo.oncontextmenu = function(e){
 			e.preventDefault();
@@ -393,7 +270,7 @@ function buildBettingBoard(){
 	var objType = 'zero';
 	var odds = 35;
 	zero.onclick = function(){
-		setBet(this, '0', objType, odds);
+		setBet(this, '0', objType, odds, 5 ,0); //value 5 considerato come numero 
 	};
 	zero.oncontextmenu = function(e){
 		e.preventDefault();
@@ -413,18 +290,26 @@ function buildBettingBoard(){
 		var colourClass = (redBlocks.includes(numberBlocks[i]))? ' redNum' : ((nbClass == 'number_block')? ' blackNum' : '');
 		var numberBlock = document.createElement('div');
 		numberBlock.setAttribute('class', nbClass + colourClass);
+
 		numberBlock.onclick = function(){
 			if(numberBlocks[a] != '2 to 1'){
-				setBet(this, ''+numberBlocks[a]+'', 'inside_whole', 35);
+				setBet(this, ''+numberBlocks[a]+'', 'inside_whole', 35, 5,numberBlocks[a]); //bettype 5 numer con value il suo valore
 			}else{
 				num = (a == 12)? '3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36' : ((a == 25)? '2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35' : '1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34');
-				setBet(this, num, 'outside_column', 2);
+				if(a==12){
+					setBet(this, num, 'outside_column', 2, 2, 0); //bettype 2
+				}else if(a==25){
+					setBet(this, num, 'outside_column', 2, 2, 1); //bettype 2
+				}else{
+					setBet(this, num, 'outside_column', 2, 2, 2); //bettype 2
+				}
+				
 			}
 		};
 		numberBlock.oncontextmenu = function(e){
 			e.preventDefault();
 			if(numberBlocks[a] != '2 to 1'){
-				removeBet(this, ''+numberBlocks[a]+'', 'inside_whole', 35);
+				removeBet(this, ''+numberBlocks[a]+'', 'inside_whole', 35); 
 			}else{
 				num = (a == 12)? '3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36' : ((a == 25)? '2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35' : '1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34');
 				removeBet(this, num, 'outside_column', 2);
@@ -432,7 +317,16 @@ function buildBettingBoard(){
 		};
 		var nbn = document.createElement('div');
 		nbn.setAttribute('class', 'nbn');
+
+
 		nbn.innerText = numberBlocks[i];
+
+
+		
+
+		
+
+
 		numberBlock.append(nbn);
 		numberBoard.append(numberBlock);
 	}
@@ -448,7 +342,14 @@ function buildBettingBoard(){
 		bo3Block.setAttribute('class', 'bo3_block');
 		bo3Block.onclick = function(){
 			num = (b == 0)? '1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12' : ((b == 1)? '13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24' : '25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36');
-			setBet(this, num, 'outside_dozen', 2);
+			if(b==0){
+				setBet(this, num, 'outside_dozen', 2, 1,0);//bettype 1
+			}else if(b==1){
+				setBet(this, num, 'outside_dozen', 2, 1,1);//bettype 1
+			}else{
+				setBet(this, num, 'outside_dozen', 2, 1,2);//bettype 1
+			}
+			
 		};
 		bo3Block.oncontextmenu = function(e){
 			e.preventDefault();
@@ -470,7 +371,16 @@ function buildBettingBoard(){
 		otoBlock.setAttribute('class', 'oto_block' + colourClass);
 		otoBlock.onclick = function(){
 			num = (d == 0)? '2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36' : ((d == 1)? '1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36' : ((d == 2)? '2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35' : '1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35'));
-			setBet(this, num, 'outside_oerb', 1);
+			if(d==0){
+				setBet(this, num, 'outside_oerb', 1, 4, 0); //bettype 4 0-> pari
+			}else if(d==1){
+				setBet(this, num, 'outside_oerb', 1, 0, 1); //bettype 0 1-> rossi
+			}else if(d==2){
+				setBet(this, num, 'outside_oerb', 1, 0, 0); //bettype 0 0-> neri
+			}else{
+				setBet(this, num, 'outside_oerb', 1, 4, 1); //bettype 4 1-> dispari
+			}
+			
 		};
 		otoBlock.oncontextmenu = function(e){
 			num = (d == 0)? '2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36' : ((d == 1)? '1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36' : ((d == 2)? '2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35' : '1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35'));
@@ -552,12 +462,39 @@ function buildBettingBoard(){
 	container.append(bettingBoard);
 }
 
+
 function clearBet(){
 	bet = [];
 	numbersBet = [];
 }
 
-function setBet(e, n, t, o){
+/*
+	(BetTypes)
+    BetTypes are as follow:
+      0: color rosso o nero
+      1: column 2 to 1
+      2: dozen 1 of 12
+      3: eighteen 1 of 18
+      4: modulus pari o dispari
+      5: number
+      
+	  (Value)
+    Depending on the BetType, number will be:
+      color: 0 for black, 1 for red
+      column: 0 for left, 1 for middle, 2 for right
+      dozen: 0 for first, 1 for second, 2 for third
+      eighteen: 0 for low, 1 for high
+      modulus: 0 for even, 1 for odd
+      number: number
+  */
+
+function setBet(e, n, t, o,betType,value){
+	//log per verificare le chips
+	console.log(n);
+	console.log(t);
+	console.log(o);
+	console.log(betType);
+	console.log(value);
 	lastWager = wager;
 	wager = (bankValue < wager)? bankValue : wager;
 	if(wager > 0){
@@ -598,7 +535,9 @@ function setBet(e, n, t, o){
 			amt: wager,
 			type: t,
 			odds: o,
-			numbers: n
+			numbers: n,
+			bettype: betType,
+			val: value
 		};
 		bet.push(obj);
 		
@@ -738,7 +677,9 @@ function removeBet(e, n, t, o){
 		}
 	}
 
-	if((currentBet >= 0 && currentBet < 0.001) && container.querySelector('.spinBtn')){
+	if(currentBet < 0.001  && container.querySelector('.spinBtn')){
+        currentBet=0;
+        document.getElementById('betSpan').innerText = '' + currentBet.toLocaleString("en-GB") + '';
 		removeButtonSpin();
 	}
 }
