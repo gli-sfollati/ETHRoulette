@@ -1,0 +1,48 @@
+div#container {
+    border: 1px solid #FF0000; /* Da togliere successivamente */
+    height: 150px; /* altezza */
+    width: 100%; /* larghezza */
+    display:flex;
+    flex-direction: row;
+}
+
+
+
+div#logo {
+    background: #8e2e56;
+    
+
+}
+
+div#content {
+    border: 1px solid #000000; 
+    background: #381b91;
+}
+
+div#actions {
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.rigActions {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 5px;
+    background: #3d5d37;
+
+}
+
+
+#eth1{
+    display: inline-block;
+    text-align: center;
+    font-size: 50px;
+    color: red;
+}
+#roulette1{
+    font-size: 50px;
+    display: inline-block;
+}
+
+

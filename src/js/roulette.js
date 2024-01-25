@@ -67,7 +67,7 @@ App = {
 	
 		var rouletteInstance;
 	
-	web3.eth.getAccounts(function(error, accounts) {
+		web3.eth.getAccounts(function(error, accounts) {
 
 	  if (error) {
 		console.log(error);
@@ -80,10 +80,12 @@ App = {
 
 		//invio transazione per giore (numer 0 - bettype 0) ovvero puntando sul colore nero
 		//rouletteInstance.bet(0,0);
-	
+		var accounts = ethereum.request({ method: 'eth_accounts' });
 		//il contratto ritorna il numero generato per semplicità ritorna sempre 12
-		var number= rouletteInstance.spinWheel();
-		console.log(number);
+		var number= rouletteInstance.spinWheel({ from: accounts[0], value: 1111 });
+		var stat =  rouletteInstance.getStatus();
+		console.log(stat[3]);
+		console.log(value);
 		// Execute adopt as a transaction by sending account
 		return number
 	  }).then(function(result) {

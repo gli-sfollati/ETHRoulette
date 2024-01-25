@@ -59,7 +59,9 @@ contract Roulette {
     ); 
   }
     
-  function addEther() payable public {}
+  function addEther() payable public {
+
+  }
 
   function bet(uint8 number, uint8 betType) payable public {
     /* 
@@ -84,14 +86,83 @@ contract Roulette {
     }));
   }
 
-  function spinWheel() public pure returns (uint){
-    
-    uint number;
-    
-    number= 12;
-    return number;
+  function spinWheel() public payable{
+    /* are there any bets? */
+    require(bets.length > 0);
+
+    require(msg.value > 10000000000000000 wei);  
+
+    /* are we allowed to spin the wheel? */
+    require(block.timestamp > nextRoundTimestamp);
+
+
+    /* next time we are allowed to spin the wheel again */
+    nextRoundTimestamp = block.timestamp;
+
+
+    /* calculate 'random' number */
+    uint diff = block.difficulty;
+
+    bytes32 hash = blockhash(block.number-1);
+    Bet memory lb = bets[bets.length-1];
+    uint number = uint(keccak256(abi.encodePacked(block.timestamp, diff, hash, lb.betType, lb.player, lb.number))) % 37;
+    /* check every bet for this number */
+    for (uint i = 0; i < bets.length; i++) {
+      bool won = false;
+      Bet memory b = bets[i];
+      if (number == 0) {
+        won = (b.betType == 5 && b.number == 0);                   /* bet on 0 */
+      } else {
+        if (b.betType == 5) { 
+          won = (b.number == number);                              /* bet on number */
+        } else if (b.betType == 4) {
+          if (b.number == 0) won = (number % 2 == 0);              /* bet on even */
+          if (b.number == 1) won = (number % 2 == 1);              /* bet on odd */
+        } else if (b.betType == 3) {            
+          if (b.number == 0) won = (number <= 18);                 /* bet on low 18s */
+          if (b.number == 1) won = (number >= 19);                 /* bet on high 18s */
+        } else if (b.betType == 2) {                               
+          if (b.number == 0) won = (number <= 12);                 /* bet on 1st dozen */
+          if (b.number == 1) won = (number > 12 && number <= 24);  /* bet on 2nd dozen */
+          if (b.number == 2) won = (number > 24);                  /* bet on 3rd dozen */
+        } else if (b.betType == 1) {               
+          if (b.number == 0) won = (number % 3 == 1);              /* bet on left column */
+          if (b.number == 1) won = (number % 3 == 2);              /* bet on middle column */
+          if (b.number == 2) won = (number % 3 == 0);              /* bet on right column */
+        } else if (b.betType == 0) {
+          if (b.number == 0) {                                     /* bet on black */
+            if (number <= 10 || (number >= 20 && number <= 28)) {
+              won = (number % 2 == 0);
+            } else {
+              won = (number % 2 == 1);
+            }
+          } else {                                                 /* bet on red */
+            if (number <= 10 || (number >= 20 && number <= 28)) {
+              won = (number % 2 == 1);
+            } else {
+              won = (number % 2 == 0);
+            }
+          }
+        }
+      }
+      /* if winning bet, add to player winnings balance */
+      if (won) {
+        winnings[b.player] += betAmount * payouts[b.betType];
+      }
+    }
+    /* delete all bets */
+    //bets.length = 0;
+    delete bets;
+    /* reset necessaryBalance */
+    necessaryBalance = 0;
+    /* check if to much money in the bank */
+    //if (address(this).balance > maxAmountAllowedInTheBank) takeProfits();
+    /* returns 'random' number to UI */
+    emit RandomNumber(number);
   }
-  
+
+  /*
+
   function cashOut() public {
     address payable player = payable(msg.sender);
     uint256 amount = winnings[player];
@@ -112,5 +183,6 @@ contract Roulette {
     creator.transfer(address(this).balance);
     //selfdestruct(creator);
   }
+  */
  
 }
