@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
+import "contracts/Profile.sol";
 
-contract Roulette {
+contract Roulette is Profile{
   
   uint betAmount;
   uint necessaryBalance;
   uint nextRoundTimestamp;
-  address payable creator;
   uint256 maxAmountAllowedInTheBank;
   mapping (address => uint256) winnings;
   uint8[] payouts;
@@ -38,7 +38,6 @@ contract Roulette {
   Bet[] public bets;
   
   constructor() payable {
-    creator =payable(msg.sender);
     necessaryBalance = 0;
     nextRoundTimestamp = block.timestamp;
     payouts = [2,3,3,2,2,36];
@@ -49,19 +48,15 @@ contract Roulette {
 
   event RandomNumber(uint256 number);
   
-  function getStatus() public view returns(uint, uint, uint, uint, uint) {
+  function getStatus() public view returns(uint, uint, uint, uint) {
     return (
       bets.length,             // number of active bets
       bets.length * betAmount, // value of active bets
       nextRoundTimestamp,      // when can we play again
-      address(this).balance,   // roulette balance
       winnings[msg.sender]     // winnings of player
     ); 
   }
-    
-  function addEther() payable public {
 
-  }
 
   function bet(uint8 number, uint8 betType) payable public {
     /* 
@@ -71,12 +66,12 @@ contract Roulette {
        3 - the option betted is valid (don't bet on 37!)
        4 - the bank has sufficient funds to pay the bet
     */
-    require(msg.value == betAmount);                               // 1
-    require(betType >= 0 && betType <= 5);                         // 2
-    require(number >= 0 && number <= numberRange[betType]);        // 3
+    require(msg.value == betAmount, "non hai versato abbastanza fondi");                               // 1
+    require(betType >= 0 && betType <= 5, "non hai inserito la giusta giocata");                         // 2
+    require(number >= 0 && number <= numberRange[betType], "che numero di giocata hai selezionato?");        // 3
     uint payoutForThisBet = payouts[betType] * msg.value;
     uint provisionalBalance = necessaryBalance + payoutForThisBet;
-    require(provisionalBalance < address(this).balance);           // 4
+    require(provisionalBalance < address(this).balance, "la banca non ha abbastanza fondi da darti se vincessi");           // 4
     /* we are good to go */
     necessaryBalance += payoutForThisBet;
     bets.push(Bet({
@@ -88,21 +83,14 @@ contract Roulette {
 
   function spinWheel() public payable{
     /* are there any bets? */
-    require(bets.length > 0);
-
-    require(msg.value > 10000000000000000 wei);  
-
+    require(bets.length > 0, "non ci sono giocate");
+    //require(msg.value > 10000000000000000 wei, "non sono stati versati abbastanza fondi ");  
     /* are we allowed to spin the wheel? */
-    require(block.timestamp > nextRoundTimestamp);
-
-
+    require(block.timestamp > nextRoundTimestamp, "non e passato abbastanza tempo per poter rigiocare");
     /* next time we are allowed to spin the wheel again */
     nextRoundTimestamp = block.timestamp;
-
-
     /* calculate 'random' number */
     uint diff = block.difficulty;
-
     bytes32 hash = blockhash(block.number-1);
     Bet memory lb = bets[bets.length-1];
     uint number = uint(keccak256(abi.encodePacked(block.timestamp, diff, hash, lb.betType, lb.player, lb.number))) % 37;
@@ -148,15 +136,20 @@ contract Roulette {
       /* if winning bet, add to player winnings balance */
       if (won) {
         winnings[b.player] += betAmount * payouts[b.betType];
+        //aggiorniamo le giocate del giocatore;
+        addToPlayer[b.player].game +=1;
+        addToPlayer[b.player].cashInBank += betAmount * payouts[b.betType];
+      }else{
+        addToPlayer[b.player].game +=1;
       }
     }
     /* delete all bets */
     //bets.length = 0;
     delete bets;
+
     /* reset necessaryBalance */
     necessaryBalance = 0;
-    /* check if to much money in the bank */
-    //if (address(this).balance > maxAmountAllowedInTheBank) takeProfits();
+
     /* returns 'random' number to UI */
     emit RandomNumber(number);
   }

@@ -10,39 +10,41 @@ div#container {
 
 div#logo {
     background: #8e2e56;
-    
+    display: block;
+    height: 30px;
+    padding-bottom: 9px;
+    text-align: center;
+    margin-top: 1%;
+    margin-left: 2%;
 
 }
 
 div#content {
-    border: 1px solid #000000; 
     background: #381b91;
+    margin-left:500px;
+    width: 200px;
 }
 
 div#actions {
     display: flex;
     flex-direction: row;
-    
+    margin-left: 500px;
 }
 
 .rigActions {
     padding: 10px;
-    border: 1px solid #ccc;
     margin-bottom: 5px;
     background: #3d5d37;
-
+    margin-top: 3%;
+    margin-left: 2%;
 }
 
 
 #eth1{
-    display: inline-block;
-    text-align: center;
-    font-size: 50px;
+    font-size: 30px;
     color: red;
-}
-#roulette1{
-    font-size: 50px;
-    display: inline-block;
+    padding-left: 10px;
+    padding-top: 38px;
 }
 
 
