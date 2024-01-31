@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
+import "./Profile.sol";
 pragma solidity ^0.8.19;
-import "contracts/Profile.sol";
+
 
 contract Roulette is Profile{
   

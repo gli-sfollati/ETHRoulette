@@ -99,7 +99,7 @@ App = {
             var price =await profileInstance.getStato.call();
             var prezzo = price[1].toNumber();
             console.log("prima di some ether"+ prezzo, accounts);
-            await profileInstance.someEther({ from: accounts[0], value: prezzo });
+            await profileInstance.addEther({ from: accounts[0], value: prezzo });
             
 
           }).then(function (result ) {     
