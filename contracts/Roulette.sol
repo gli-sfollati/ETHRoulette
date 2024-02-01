@@ -12,6 +12,7 @@ contract Roulette is Profile{
   mapping (address => uint256) winnings;
   uint8[] payouts;
   uint8[] numberRange;
+  uint estratto;
   
   /*
     BetTypes are as follow:
@@ -91,19 +92,25 @@ contract Roulette is Profile{
 
 
 //prova per valutare la corretta esecuzione della funzione bet
- function getBet() public view returns(uint,uint8,uint8,uint){
+ function getBet() public view returns(uint,uint8,uint8,uint,uint){
   uint lung= bets.length;
   Bet memory b= bets[lung-1];
        return (
         b.amount,
         b.betType,
         b.number,
-        lung
+        lung,
+        address(this).balance
        );
     
   }
 
-  function spinWheel() public payable{
+  function getNumber() public view returns(uint){
+       return estratto;
+  }
+
+
+   function spinWheel() public returns (uint){
     /* are there any bets? */
     require(bets.length > 0, "non ci sono giocate");
     //require(msg.value > 10000000000000000 wei, "non sono stati versati abbastanza fondi ");  
@@ -116,7 +123,7 @@ contract Roulette is Profile{
     bytes32 hash = blockhash(block.number-1);
     Bet memory lb = bets[bets.length-1];
     uint number = uint(keccak256(abi.encodePacked(block.timestamp, diff, hash, lb.betType, lb.player, lb.number))) % 37;
-    /* check every bet for this number */
+    /* check every bet for this number */ 
     for (uint i = 0; i < bets.length; i++) {
       bool won = false;
       Bet memory b = bets[i];
@@ -174,7 +181,9 @@ contract Roulette is Profile{
 
     /* returns 'random' number to UI */
     emit RandomNumber(number);
+    return number;
   }
+
 
   /*
 

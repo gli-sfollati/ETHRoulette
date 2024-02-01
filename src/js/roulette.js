@@ -73,8 +73,6 @@ App = {
 	
 		var rouletteInstance;
 
-		//for(var i=0;i<bet.length;i++){
-
 		var lung=bet.length;
 
 		console.log("cifra da scommetere: "+bet[lung-1].amt);
@@ -105,13 +103,15 @@ App = {
 			 // var ritorno = price[0];
 			  //console.log(price);
 			
-			}).then(function (result) {     
+			}).then(function (result) {  
+				
 				return App.getBets();
+				//return App.getStatoUtente();
 			});
 
 			
 		});
-	//	}
+
 	  },
 
 	  getBets: function() {
@@ -129,10 +129,6 @@ App = {
 			App.contracts.Roulette = TruffleContract(RouletteArtifact);
 			App.contracts.Roulette.setProvider(App.web3Provider);
 
-
-			
-			
-  
 			App.contracts.Roulette.deployed().then(async function (instance) {
 			  rouletteInstance = instance;
   
@@ -148,12 +144,77 @@ App = {
 				console.log("ciao2");  
 				var r=result;
 			  console.log(r);
+			 return App.spinWheel();
 			});
 
 			
 		});
-	  }
+	  },
 
+	  spinWheel: function() {
+		
+		var accounts = ethereum.request({ method: 'eth_accounts' });
+      	console.log(accounts);
+		//event.preventDefault();
+	
+		var rouletteInstance;
+
+	
+	
+		$.getJSON('Roulette.json', function (data) {
+			var RouletteArtifact = data;
+			App.contracts.Roulette = TruffleContract(RouletteArtifact);
+			App.contracts.Roulette.setProvider(App.web3Provider);
+
+			App.contracts.Roulette.deployed().then(async function (instance) {
+			  rouletteInstance = instance;
+  
+			  var accounts = await ethereum.request({ method: 'eth_accounts' });
+
+			  //console.log(accounts[0]);
+
+			 return rouletteInstance.spinWheel({from: accounts[0]});
+			  
+			
+			}).then(function (result) {   
+				console.log("ciao3");  
+				var r=result;
+				var numero=r.logs[0].args.number.c[0]
+			  console.log("estratto: "+ numero);
+			  spin(numero);
+			  App.getStatoUtente();
+			});
+			
+			
+		});
+
+	},
+
+	//non stampa alcun dato dell utente
+	getStatoUtente:async  function() {
+		var profileInstance;
+		//var dato1 = document.getElementById("dato1");
+		$.getJSON('Profile.json', function (data) {
+			var ProfileArtifact = data;
+			App.contracts.Profile = TruffleContract(ProfileArtifact);
+  
+			App.contracts.Profile.setProvider(App.web3Provider);
+  
+			App.contracts.Profile.deployed().then(async function (instance) {
+			  profileInstance = instance;
+			  var accounts = await ethereum.request({ method: 'eth_accounts' });
+			  console.log(accounts[0]);
+
+				var data =await profileInstance.getStatoUtente.call();
+				console.log(data);
+				return data;
+			}).then(function (result) {
+				
+			});
+		});
+		
+		//return App.bindEvents();
+	  },
 
   
   };
