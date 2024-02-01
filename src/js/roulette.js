@@ -59,43 +59,101 @@ App = {
 	
 	  bindEvents: function() {
 		$(document).on('click', '.spinBtn', App.goGame);
+		$(document).on('click', '.btn-ultimobet', App.getBets);
+		window.ethereum.on('accountsChanged', () => {
+			window.location.reload();
+		  })
 	  },
 
 
 	goGame: function(event) {
-		event.preventDefault();
+		//var accounts = ethereum.request({ method: 'eth_accounts' });
+      //console.log(accounts);
+		//event.preventDefault();
 	
 		var rouletteInstance;
-	
-		web3.eth.getAccounts(function(error, accounts) {
 
-	  if (error) {
-		console.log(error);
-	  }
-	
-	  var account = accounts[0];
-	
-	  App.contracts.Roulette.deployed().then(function(instance) {
-		rouletteInstance = instance;
+		//for(var i=0;i<bet.length;i++){
 
-		//invio transazione per giore (numer 0 - bettype 0) ovvero puntando sul colore nero
-		//rouletteInstance.bet(0,0);
+		var lung=bet.length;
+
+		console.log("cifra da scommetere: "+bet[lung-1].amt);
+		console.log("BetType: "+bet[lung-1].bettype);
+		console.log("Number: "+bet[lung-1].val);
+
+		var amount=bet[lung-1].amt*1000000000000000000;
+		var bettype=bet[lung-1].bettype;
+		var number=bet[lung-1].val;
+		
+	
+		$.getJSON('Roulette.json', function (data) {
+			var RouletteArtifact = data;
+			App.contracts.Roulette = TruffleContract(RouletteArtifact);
+			App.contracts.Roulette.setProvider(App.web3Provider);
+
+			
+  
+			App.contracts.Roulette.deployed().then(async function (instance) {
+			  rouletteInstance = instance;
+  
+			  var accounts = await ethereum.request({ method: 'eth_accounts' });
+
+			  console.log(accounts[0]);
+
+			  const options = {from: accounts[0], value:amount};
+			  return await rouletteInstance.bet(number,bettype,options);
+			 // var ritorno = price[0];
+			  //console.log(price);
+			
+			}).then(function (result) {     
+				return App.getBets();
+			});
+
+			
+		});
+	//	}
+	  },
+
+	  getBets: function() {
+		
 		var accounts = ethereum.request({ method: 'eth_accounts' });
-		//il contratto ritorna il numero generato per semplicità ritorna sempre 12
-		var number= rouletteInstance.spinWheel({ from: accounts[0], value: 1111 });
-		var stat =  rouletteInstance.getStatus();
-		console.log(stat[3]);
-		console.log(value);
-		// Execute adopt as a transaction by sending account
-		return number
-	  }).then(function(result) {
-		return spin(result.c[0]);
-	  }).catch(function(err) {
-		console.log(err.message);
-	  });
-	});
+      	console.log(accounts);
+		//event.preventDefault();
 	
+		var rouletteInstance;
+
+	
+	
+		$.getJSON('Roulette.json', function (data) {
+			var RouletteArtifact = data;
+			App.contracts.Roulette = TruffleContract(RouletteArtifact);
+			App.contracts.Roulette.setProvider(App.web3Provider);
+
+
+			
+			
+  
+			App.contracts.Roulette.deployed().then(async function (instance) {
+			  rouletteInstance = instance;
+  
+			  var accounts = await ethereum.request({ method: 'eth_accounts' });
+
+			  //console.log(accounts[0]);
+
+			 return rouletteInstance.getBet({from: accounts[0]});
+			  console.log("ciao1");
+			  console.log(console1);
+			
+			}).then(function (result) {   
+				console.log("ciao2");  
+				var r=result;
+			  console.log(r);
+			});
+
+			
+		});
 	  }
+
 
   
   };
@@ -105,6 +163,11 @@ App = {
       App.init();
     });
   });
+
+
+  	const BET_AMOUNT =  10000000000000000n; /* 0,01 ether, around $6 */
+	const GAS = 70000000;
+	const GAS_PRICE = 2000000000;
 
   let bankValue = 10;
   let currentBet = 0;

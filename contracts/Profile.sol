@@ -33,9 +33,6 @@ contract Profile {
     event existingPlayer(string, address);
 
 
-
-
-
     //Serve a depositare del denaro
     function addEther() public payable returns(bool){
         require(msg.value > 0, "non puoi trasferire una quantita pari a 0");
@@ -102,9 +99,7 @@ contract Profile {
         return true;
         
 
-        
     }
-
 
 
 }

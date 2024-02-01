@@ -35,6 +35,7 @@ contract Roulette is Profile{
     address player;
     uint8 betType;
     uint8 number;
+    uint amount;
   }
   Bet[] public bets;
   
@@ -59,7 +60,7 @@ contract Roulette is Profile{
   }
 
 
-  function bet(uint8 number, uint8 betType) payable public {
+  function bet(uint8 number, uint8 betType) payable public{
     /* 
        A bet is valid when:
        1 - the value of the bet is correct (=betAmount)
@@ -67,19 +68,39 @@ contract Roulette is Profile{
        3 - the option betted is valid (don't bet on 37!)
        4 - the bank has sufficient funds to pay the bet
     */
-    require(msg.value == betAmount, "non hai versato abbastanza fondi");                               // 1
+    //require(msg.value == betAmount, "non hai versato abbastanza fondi");                               // 1
+   // require(amount>=10000000000000000,"per ogni puntata almeno 0.01eth");
     require(betType >= 0 && betType <= 5, "non hai inserito la giusta giocata");                         // 2
     require(number >= 0 && number <= numberRange[betType], "che numero di giocata hai selezionato?");        // 3
-    uint payoutForThisBet = payouts[betType] * msg.value;
-    uint provisionalBalance = necessaryBalance + payoutForThisBet;
-    require(provisionalBalance < address(this).balance, "la banca non ha abbastanza fondi da darti se vincessi");           // 4
+   
+   // uint payoutForThisBet = payouts[betType] * msg.value; 
+  //  uint provisionalBalance = necessaryBalance + payoutForThisBet;
+  // require(provisionalBalance < address(this).balance, "la banca non ha abbastanza fondi da darti se vincessi");           // 4
     /* we are good to go */
-    necessaryBalance += payoutForThisBet;
+    //necessaryBalance += payoutForThisBet;
+
+
     bets.push(Bet({
+      amount: msg.value,
       betType: betType,
       player: msg.sender,
       number: number
     }));
+
+  }
+
+
+//prova per valutare la corretta esecuzione della funzione bet
+ function getBet() public view returns(uint,uint8,uint8,uint){
+  uint lung= bets.length;
+  Bet memory b= bets[lung-1];
+       return (
+        b.amount,
+        b.betType,
+        b.number,
+        lung
+       );
+    
   }
 
   function spinWheel() public payable{
